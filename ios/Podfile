@@ -32,4 +32,6 @@ target 'iResume' do
 
   use_unimodules!
 
+  pod 'react-native-document-picker', :path => '../node_modules/react-native-document-picker'
+
 end

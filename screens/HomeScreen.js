@@ -12,6 +12,9 @@ import {
   View,
 } from 'react-native';
 
+import { Container, Button, Text } from 'native-base';
+
+
 import { MonoText } from '../components/StyledText';
 
 export default function HomeScreen() {
