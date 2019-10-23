@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 
 import { MonoText } from '../components/StyledText';
+var UploadFile = require('NativeModules').UploadFile;
+import DocumentPicker from 'react-native-document-picker';
 
 export default function HomeScreen() {
   return (
@@ -19,18 +21,24 @@ export default function HomeScreen() {
         style={styles.container}
         contentContainerStyle={styles.contentContainer}>
         <View style={styles.welcomeContainer}>
-          <Image
-            source={
-              __DEV__
-                ? require('../assets/images/robot-dev.png')
-                : require('../assets/images/robot-prod.png')
-            }
-            style={styles.welcomeImage}
-          />
+          <Text h2>iResume</Text>
         </View>
-
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={styles.buttonStyle}
+          onPress={selectOneFile.bind(this)}>
+          {/*Single file selection button*/}
+          <Text style={{ marginRight: 10, fontSize: 19 }}>
+            Click here to pick one file
+          </Text>
+          <Image
+            source={{
+              uri: 'https://img.icons8.com/offices/40/000000/attach.png',
+            }}
+            style={styles.imageIconStyle}
+          />
+        </TouchableOpacity>
         <View style={styles.getStartedContainer}>
-          <DevelopmentModeNotice />
 
           <Text style={styles.getStartedText}>Get started by opening</Text>
 
@@ -108,6 +116,50 @@ function handleHelpPress() {
   );
 }
 
+async function documentPicker() {
+  const result = await DocumentPicker.getDocumentAsync({});
+  console.log('result', result);
+  if (!result.cancelled) {
+    this.setState({
+      image: result,
+    });
+  }
+}
+
+
+async function selectOneFile() {
+  //Opening Document Picker for selection of one file
+  try {
+    const res = await DocumentPicker.pick({
+      type: [DocumentPicker.types.allFiles],
+      //There can me more options as well
+      // DocumentPicker.types.allFiles
+      // DocumentPicker.types.images
+      // DocumentPicker.types.plainText
+      // DocumentPicker.types.audio
+      // DocumentPicker.types.pdf
+    });
+    //Printing the log realted to the file
+    console.log('res : ' + JSON.stringify(res));
+    console.log('URI : ' + res.uri);
+    console.log('Type : ' + res.type);
+    console.log('File Name : ' + res.name);
+    console.log('File Size : ' + res.size);
+    //Setting the state to show single file attributes
+    this.setState({ singleFile: res });
+  } catch (err) {
+    //Handling any exception (If any)
+    if (DocumentPicker.isCancel(err)) {
+      //If user canceled the document selection
+      alert('Canceled from single doc picker');
+    } else {
+      //For Unknown Error
+      alert('Unknown Error: ' + JSON.stringify(err));
+      throw err;
+    }
+  }
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -125,7 +177,7 @@ const styles = StyleSheet.create({
   },
   welcomeContainer: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 100,
     marginBottom: 20,
   },
   welcomeImage: {
@@ -194,5 +246,11 @@ const styles = StyleSheet.create({
   helpLinkText: {
     fontSize: 14,
     color: '#2e78b7',
+  },
+  buttonStyle: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#DDDDDD',
+    padding: 5,
   },
 });
