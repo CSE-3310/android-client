@@ -26,7 +26,7 @@ export default function HomeScreen() {
       </Button>
 
       <Content style={styles.resultView}>
-        <Card>
+        <Card style={styles.card}>
             <CardItem header>
               <Text>Company</Text>
               <Text note> - Job Title</Text>
@@ -47,7 +47,7 @@ export default function HomeScreen() {
          </Card>
          
 
-         <Card>
+         <Card style={styles.card}>
             <CardItem header>
               <Text>Company</Text>
               <Text note> - Job Title</Text>
@@ -67,7 +67,7 @@ export default function HomeScreen() {
             </CardItem>
          </Card>
 
-         <Card>
+         <Card style={styles.card}>
             <CardItem header>
               <Text>Company</Text>
               <Text note> - Job Title</Text>
@@ -87,7 +87,7 @@ export default function HomeScreen() {
             </CardItem>
          </Card>
 
-         <Card>
+         <Card style={styles.card}>
             <CardItem header>
               <Text>Company</Text>
               <Text note> - Job Title</Text>
@@ -137,6 +137,10 @@ const styles = StyleSheet.create({
     paddingTop: 8
   },
   form: {
-    padding: 15,
+    padding: 10,
+  },
+  card: {
+    marginTop: 10,
+    marginBottom: 10
   }
 });
