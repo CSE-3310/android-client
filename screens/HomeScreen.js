@@ -1,146 +1,134 @@
-import * as WebBrowser from 'expo-web-browser';
-import React from 'react';
+import * as WebBrowser from "expo-web-browser";
+import React, { Component } from "react";
+import { Platform, StyleSheet, View } from "react-native";
+import { AsyncStorage } from "react-native";
 import {
-  Platform,
-   StyleSheet,
-  View
-} from 'react-native';
+  Container,
+  Item,
+  Input,
+  Header,
+  Body,
+  Content,
+  Title,
+  Button,
+  Text,
+  Label,
+  H1,
+  Card,
+  CardItem
+} from "native-base";
 
-import { Container, Item, Input, Header, Body, Content, Title, Button, Text, H3, Card, CardItem} from 'native-base';
+export default class HomeScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      filename: "",
+      location: "",
+      query: ""
+    };
 
-export default function HomeScreen() {
-  const [value, onChangeText] = React.useState('');
+    this.search = this.search.bind(this);
+  }
 
-  return (
-    <Container>
-    <Header>
-      <Body>
-        <Title>iResume</Title>
-      </Body>
-    </Header>
-    <Content padder style={styles.form}>
-      <H3>Keyword search</H3>
-      <Input placeholder='Link resume' />
-      <Button block primary>
-        <Text>Search</Text>
-      </Button>
+  async search() {
+    // POST to api
+    let form = new FormData();
+    form.append("filename", this.state.filename);
+    form.append("location", this.state.location);
+    form.append("query", this.state.query);
 
-      <Content style={styles.resultView}>
-        <Card style={styles.card}>
-            <CardItem header>
-              <Text>Company</Text>
-              <Text note> - Job Title</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Text>
-                  Job description snippet...
-                  Job description snippet...
-                  Job description snippet...
+    const response = await fetch(
+      "https://iresume-server.herokuapp.com/api/match",
+      {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: form
+      }
+    );
 
-                </Text>
-              </Body>
-            </CardItem>
-            <CardItem footer>
-              <Text note>Source (indeed, glassdoor, etc)</Text>
-            </CardItem>
-         </Card>
-         
+    let server_resp = await response.json();
+    console.log(server_resp);
 
-         <Card style={styles.card}>
-            <CardItem header>
-              <Text>Company</Text>
-              <Text note> - Job Title</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Text>
-                  Job description snippet...
-                  Job description snippet...
-                  Job description snippet...
+    await AsyncStorage.setItem("usermatch", JSON.stringify(server_resp));
 
-                </Text>
-              </Body>
-            </CardItem>
-            <CardItem footer>
-              <Text note>Source (indeed, glassdoor, etc)</Text>
-            </CardItem>
-         </Card>
+    this.props.navigation.push("Settings");
+  }
 
-         <Card style={styles.card}>
-            <CardItem header>
-              <Text>Company</Text>
-              <Text note> - Job Title</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Text>
-                  Job description snippet...
-                  Job description snippet...
-                  Job description snippet...
+  render() {
+    return (
+      <Container>
+        <Content padder style={styles.form}>
 
-                </Text>
-              </Body>
-            </CardItem>
-            <CardItem footer>
-              <Text note>Source (indeed, glassdoor, etc)</Text>
-            </CardItem>
-         </Card>
+          {/* Resume input */}
+          <Item stackedLabel style={styles.formInput}>
+            <Label>Resume</Label>
+            <Input
+              value={this.state.resume}
+              onChangeText={text => this.setState({ filename: text })}
+            />
+          </Item>
 
-         <Card style={styles.card}>
-            <CardItem header>
-              <Text>Company</Text>
-              <Text note> - Job Title</Text>
-            </CardItem>
-            <CardItem>
-              <Body>
-                <Text>
-                  Job description snippet...
-                  Job description snippet...
-                  Job description snippet...
+          {/* Location input */}
+          <Item stackedLabel style={styles.formInput}>
+            <Label>Location</Label>
+            <Input
+              value={this.state.location}
+              onChangeText={text => this.setState({ location: text })}
+            />
+          </Item>
 
-                </Text>
-              </Body>
-            </CardItem>
-            <CardItem footer>
-              <Text note>Source (indeed, glassdoor, etc)</Text>
-            </CardItem>
-         </Card>
-      </Content>
+          {/* Search input */}
+          <Item stackedLabel style={styles.formInput}>
+            <Label>Query</Label>
+            <Input
+              value={this.state.query}
+              onChangeText={text => this.setState({ query: text })}
+            />
+          </Item>
 
-    </Content>
-    
-  </Container>
-  );
+          {/* Submit (post) */}
+          <Button style={styles.submit} block primary onPress={this.search}>
+            <Text>Search</Text>
+          </Button>
+        </Content>
+      </Container>
+    );
+  }
 }
 
 HomeScreen.navigationOptions = {
-  header: null,
+  header: null
 };
-
-async function documentPicker() {
-  const result = await DocumentPicker.getDocumentAsync({});
-  console.log('result', result);
-  if (!result.cancelled) {
-    this.setState({
-      image: result,
-    });
-  }
-}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff"
   },
   resultView: {
     paddingTop: 8
   },
   form: {
-    padding: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 180
+  },
+  formInput: {
+    marginBottom: 15
   },
   card: {
     marginTop: 10,
     marginBottom: 10
-  }
+  },
+  submit: {
+    marginTop: 20,
+    margin: "auto",
+    textAlign: "center"
+  },
+  hairline: {
+    backgroundColor: '#eeeeee',
+    height: 1,
+  },
 });
