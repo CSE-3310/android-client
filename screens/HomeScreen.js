@@ -18,6 +18,8 @@ import {
   CardItem
 } from "native-base";
 
+import { NavigationActions } from 'react-navigation';
+
 export default class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -31,11 +33,14 @@ export default class HomeScreen extends Component {
   }
 
   async search() {
+    AsyncStorage.removeItem("usermatch");
     // POST to api
     let form = new FormData();
     form.append("filename", this.state.filename);
     form.append("location", this.state.location);
     form.append("query", this.state.query);
+
+    console.log(form);
 
     const response = await fetch(
       "https://iresume-server.herokuapp.com/api/match",
@@ -49,11 +54,11 @@ export default class HomeScreen extends Component {
     );
 
     let server_resp = await response.json();
-    console.log(server_resp);
-
+    console.log("Writing to local");
     await AsyncStorage.setItem("usermatch", JSON.stringify(server_resp));
 
-    this.props.navigation.push("Settings");
+    this.props.navigation.navigate("Settings");
+
   }
 
   render() {

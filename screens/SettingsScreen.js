@@ -35,6 +35,11 @@ export default class SettingsScreen extends Component {
     this.setState({ jobs: JSON.parse(jobs) });
   }
 
+  async componentDidUpdate() {
+	console.log("Component did update");
+    let jobs = await AsyncStorage.getItem("usermatch");
+    this.setState({ jobs: JSON.parse(jobs) });
+  }
   cleanHTML(str) {
     const regex = /(<([^>]+)>)/gi;
     const result = str.replace(regex, "");
@@ -43,6 +48,9 @@ export default class SettingsScreen extends Component {
   }
 
   render() {
+	if (!this.state.jobs) {
+		return null
+	}
     return (
       <Container>
         <Content padder style={styles.form}>
@@ -78,7 +86,7 @@ export default class SettingsScreen extends Component {
   }
 }
 SettingsScreen.navigationOptions = {
-  title: ""
+  title: "Job Results"
 };
 
 const styles = StyleSheet.create({
