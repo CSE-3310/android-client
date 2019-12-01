@@ -18,7 +18,7 @@ import {
   CardItem
 } from "native-base";
 
-import { NavigationActions } from 'react-navigation';
+import { NavigationActions } from "react-navigation";
 
 export default class HomeScreen extends Component {
   constructor(props) {
@@ -42,30 +42,32 @@ export default class HomeScreen extends Component {
 
     console.log(form);
 
-    const response = await fetch(
-      "https://iresume-server.herokuapp.com/api/match",
-      {
-        method: "POST", // *GET, POST, PUT, DELETE, etc.
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        },
-        body: form
-      }
-    );
+    try {
+      const response = await fetch(
+        "https://iresume-server.herokuapp.com/api/match",
+        {
+          method: "POST", // *GET, POST, PUT, DELETE, etc.
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: form
+        }
+      );
 
-    let server_resp = await response.json();
-    console.log("Writing to local");
-    await AsyncStorage.setItem("usermatch", JSON.stringify(server_resp));
+      let server_resp = await response.json();
+      console.log("Writing to local");
+      await AsyncStorage.setItem("usermatch", JSON.stringify(server_resp));
 
-    this.props.navigation.navigate("Settings");
-
+      this.props.navigation.navigate("Settings");
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   render() {
     return (
       <Container>
         <Content padder style={styles.form}>
-
           {/* Resume input */}
           <Item stackedLabel style={styles.formInput}>
             <Label>Resume</Label>
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
     textAlign: "center"
   },
   hairline: {
-    backgroundColor: '#eeeeee',
-    height: 1,
-  },
+    backgroundColor: "#eeeeee",
+    height: 1
+  }
 });
