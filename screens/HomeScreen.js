@@ -48,7 +48,8 @@ export default class HomeScreen extends Component {
         {
           method: "POST", // *GET, POST, PUT, DELETE, etc.
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/json",
+            "Accept": "application/json"
           },
           body: form
         }
